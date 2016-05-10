@@ -153,7 +153,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	/// Begin post processing ///
 	GLint defaultFBO;
 	if (!_running){
-		bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth() / 5, bRenderer().getView()->getHeight() / 5);		// reduce viewport size
+		bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth() / 1, bRenderer().getView()->getHeight() / 1);		// reduce viewport size
 		defaultFBO = Framebuffer::getCurrentFramebuffer();	// get current fbo to bind it again after drawing the scene
 		bRenderer().getObjects()->getFramebuffer("fbo")->bindTexture(bRenderer().getObjects()->getTexture("fbo_texture1"), false);	// bind the fbo
 	}
@@ -169,7 +169,7 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 		// translate
 		vmml::Matrix4f modelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5));
 		// blur vertically and horizontally
-		bool b = true;		int numberOfBlurSteps = 2;
+		bool b = true;		int numberOfBlurSteps = 1;
 		for (int i = 0; i < numberOfBlurSteps; i++) {
 			if (i == numberOfBlurSteps - 1){
 				bRenderer().getObjects()->getFramebuffer("fbo")->unbind(defaultFBO); //unbind (original fbo will be bound)

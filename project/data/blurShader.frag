@@ -11,7 +11,9 @@ varying vec2 v_blurTexCoords[14];
 void main()
 {
     gl_FragColor = vec4(0.0,0.0,0.0,1.0);
-    gl_FragColor += texture2D(fbo_texture, v_blurTexCoords[ 0])*0.0044299121055113265;
+    vec2 waveCoords = vec2(texCoordVarying.s, texCoordVarying.t + sin(15.0 * texCoordVarying.s) * 0.05);
+    gl_FragColor = texture2D(fbo_texture, waveCoords);
+    /*gl_FragColor += texture2D(fbo_texture, v_blurTexCoords[ 0])*0.0044299121055113265;
     gl_FragColor += texture2D(fbo_texture, v_blurTexCoords[ 1])*0.00895781211794;
     gl_FragColor += texture2D(fbo_texture, v_blurTexCoords[ 2])*0.0215963866053;
     gl_FragColor += texture2D(fbo_texture, v_blurTexCoords[ 3])*0.0443683338718;
@@ -25,6 +27,6 @@ void main()
     gl_FragColor += texture2D(fbo_texture, v_blurTexCoords[10])*0.0443683338718;
     gl_FragColor += texture2D(fbo_texture, v_blurTexCoords[11])*0.0215963866053;
     gl_FragColor += texture2D(fbo_texture, v_blurTexCoords[12])*0.00895781211794;
-    gl_FragColor += texture2D(fbo_texture, v_blurTexCoords[13])*0.0044299121055113265;
+    gl_FragColor += texture2D(fbo_texture, v_blurTexCoords[13])*0.0044299121055113265;*/
     
 }
