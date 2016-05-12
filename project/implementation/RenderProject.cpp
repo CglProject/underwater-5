@@ -362,8 +362,40 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
     vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix2)), normalMatrix2);
     s->setUniform("NormalMatrix", normalMatrix2);
     
+    // Good: the original shark:
+    // bRenderer().getModelRenderer()->queueModelInstance("shark", "shark_instance", camera, modelMatrix2, std::vector<std::string>({ "torchLight", "topLight", "myOtherLight", "thirdLight" }), true, true);
     
-    bRenderer().getModelRenderer()->queueModelInstance("shark", "shark_instance", camera, modelMatrix2, std::vector<std::string>({ "torchLight", "topLight", "myOtherLight", "thirdLight" }), true, true);
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    float sharkDist = 10.0f;
+    float sharkAngleDiff = -0.0f;
+    for (int i = 0; i < 10; ++i) {
+        
+        vmml::Vector3f sharkCenter3(10.0f + i * sharkDist, 0.0f, 0.0f);
+        float sharkStartAngle3 = 1.46f * M_PI_F + i * sharkAngleDiff;
+        float sharkPeriod3 = 30000.0f;
+        
+        vmml::Matrix4f modelMatrix3 = vmml::create_rotation(sharkStartAngle3 + (float) elapsedTime * (1.0f / sharkPeriod3) * 2.0f * M_PI_F, vmml::Vector3f(0.0f, 1.0f, 0.0f)) * vmml::create_translation(sharkCenter3);
+        
+        vmml::Matrix3f normalMatrix3;
+        vmml::compute_inverse(vmml::transpose(vmml::Matrix3f(modelMatrix3)), normalMatrix3);
+        s->setUniform("NormalMatrix", normalMatrix3);
+        
+        bRenderer().getModelRenderer()->queueModelInstance("shark", "shark_instance_" + std::to_string(i), camera, modelMatrix3, std::vector<std::string>({ "torchLight", "topLight", "myOtherLight", "thirdLight" }), true, true);
+
+    }
+    
+    
+    
+    
+    
     
     
     
