@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		68188C361CE46BB6001BC392 /* fog.frag in Resources */ = {isa = PBXBuildFile; fileRef = 68188C341CE46BB6001BC392 /* fog.frag */; };
+		68188C371CE46BB6001BC392 /* fog.vert in Resources */ = {isa = PBXBuildFile; fileRef = 68188C351CE46BB6001BC392 /* fog.vert */; };
 		68C6D8701CDF2CF3006813B6 /* greatwhiteshark.tga in Resources */ = {isa = PBXBuildFile; fileRef = 68C6D86F1CDF2CF3006813B6 /* greatwhiteshark.tga */; };
 		68C6D8781CDF619E006813B6 /* greatwhiteshark_Eye_n.tga in Resources */ = {isa = PBXBuildFile; fileRef = 68C6D8731CDF619E006813B6 /* greatwhiteshark_Eye_n.tga */; };
 		68C6D8791CDF619E006813B6 /* greatwhiteshark_Eye.tga in Resources */ = {isa = PBXBuildFile; fileRef = 68C6D8741CDF619E006813B6 /* greatwhiteshark_Eye.tga */; };
@@ -149,6 +151,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		68188C341CE46BB6001BC392 /* fog.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = fog.frag; sourceTree = "<group>"; };
+		68188C351CE46BB6001BC392 /* fog.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = fog.vert; sourceTree = "<group>"; };
 		68C6D86F1CDF2CF3006813B6 /* greatwhiteshark.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = greatwhiteshark.tga; sourceTree = "<group>"; };
 		68C6D8731CDF619E006813B6 /* greatwhiteshark_Eye_n.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = greatwhiteshark_Eye_n.tga; sourceTree = "<group>"; };
 		68C6D8741CDF619E006813B6 /* greatwhiteshark_Eye.tga */ = {isa = PBXFileReference; lastKnownFileType = file; path = greatwhiteshark_Eye.tga; sourceTree = "<group>"; };
@@ -407,6 +411,8 @@
 		B47949841BA6742B00B5E9DC /* data */ = {
 			isa = PBXGroup;
 			children = (
+				68188C341CE46BB6001BC392 /* fog.frag */,
+				68188C351CE46BB6001BC392 /* fog.vert */,
 				68C6D88F1CE0889C006813B6 /* caust00.png */,
 				68C6D8851CE08789006813B6 /* caust00.bw */,
 				68C6D8861CE08789006813B6 /* caust01.bw */,
@@ -802,10 +808,12 @@
 				B47949B81BA6742B00B5E9DC /* flame.png in Resources */,
 				68C6D8801CDF657F006813B6 /* shark.obj in Resources */,
 				B47949BE1BA6742B00B5E9DC /* torchSurface_Color.png in Resources */,
+				68188C361CE46BB6001BC392 /* fog.frag in Resources */,
 				B47949B91BA6742B00B5E9DC /* flame.vert in Resources */,
 				68C6D88A1CE08789006813B6 /* caust00.bw in Resources */,
 				B47949A31BA6742B00B5E9DC /* basicTitle_light.png in Resources */,
 				B47949BC1BA6742B00B5E9DC /* torch.mtl in Resources */,
+				68188C371CE46BB6001BC392 /* fog.vert in Resources */,
 				68C6D8841CE061D4006813B6 /* greatwhiteshark.vert in Resources */,
 				B47949A41BA6742B00B5E9DC /* blurShader.frag in Resources */,
 				B47949BB1BA6742B00B5E9DC /* sparks.png in Resources */,

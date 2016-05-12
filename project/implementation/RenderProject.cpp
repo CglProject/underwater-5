@@ -116,6 +116,19 @@ void RenderProject::initFunction()
     
     // bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(3234.724609f, 283.204803f, 2778.703857f), vmml::Vector3f(0.f, -2.3f * M_PI_F, 0.f));
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     bRenderer().getObjects()->createCamera("camera", vmml::Vector3f(-0.0f, 0.0f, -100.0f), vmml::Vector3f(0.f,  M_PI_F, 0.f));
     
     
@@ -138,6 +151,25 @@ void RenderProject::initFunction()
 	ShaderPtr blurShader = bRenderer().getObjects()->loadShaderFile("blurShader", 0, false, false, false, false, false);			// load shader that blurs the texture
 	MaterialPtr blurMaterial = bRenderer().getObjects()->createMaterial("blurMaterial", blurShader);								// create an empty material to assign either texture1 or texture2 to
 	bRenderer().getObjects()->createSprite("blurSprite", blurMaterial);																// create a sprite using the material created above
+    
+    
+    
+    
+    
+    // Fog
+    ShaderPtr fogShader = bRenderer().getObjects()->loadShaderFile("fog", 0, false, false, false, false, false);
+    bRenderer().getObjects()->createTexture("fog_texture", 0.f, 0.f);
+    MaterialPtr fogMaterial = bRenderer().getObjects()->createMaterial("fogMaterial", fogShader);
+    bRenderer().getObjects()->createSprite("fogSprite", fogMaterial);
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 	// Update render queue
 	updateRenderQueue("camera", 0.0f, 0.0f);
@@ -151,17 +183,28 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 	//// Draw Scene and do post processing ////
 
 	/// Begin post processing ///
-	GLint defaultFBO;
+	GLint defaultFBO = Framebuffer::getCurrentFramebuffer();
 	if (!_running){
 		bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth() / 1, bRenderer().getView()->getHeight() / 1);		// reduce viewport size
 		defaultFBO = Framebuffer::getCurrentFramebuffer();	// get current fbo to bind it again after drawing the scene
 		bRenderer().getObjects()->getFramebuffer("fbo")->bindTexture(bRenderer().getObjects()->getTexture("fbo_texture1"), false);	// bind the fbo
 	}
+    
+    
+    DepthMapPtr cameraDepthMap = bRenderer().getObjects()->createDepthMap("cameraDepthMap", bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
+    bRenderer().getObjects()->getFramebuffer("fbo")->bindDepthMap(cameraDepthMap, true);
+    
+    
+    
 
 	/// Draw scene ///	
 	
 	bRenderer().getModelRenderer()->drawQueue(/*GL_LINES*/);
 	bRenderer().getModelRenderer()->clearQueue();
+    
+    
+    
+    
 	
 	if (!_running){
 		/// End post processing ///		
@@ -182,6 +225,9 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 			// draw
 			bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("blurSprite"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
 			b = !b;
+            
+            
+            
 		}
 	
         /*** Title ***/
@@ -198,7 +244,31 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 		modelMatrix = vmml::create_translation(vmml::Vector3f(-0.45f / bRenderer().getView()->getAspectRatio(), -0.6f, -0.65f)) * scaling;
 		// draw
 		bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getTextSprite("instructions"), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+    } else {
+        bRenderer().getObjects()->getFramebuffer("fbo")->unbind(defaultFBO); //unbind (original fbo will be bound)
+        bRenderer().getView()->setViewportSize(bRenderer().getView()->getWidth(), bRenderer().getView()->getHeight());
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    vmml::Matrix4f fogModelMatrix = vmml::create_translation(vmml::Vector3f(0.0f, 0.0f, -0.5)) * vmml::create_scaling(1.0f);
+    // TexturePtr fogInputTexture = bRenderer().getObjects()->getTexture("fbo_texture1");
+    TexturePtr fogInputTexture = cameraDepthMap;
+    ShaderPtr fogShader = bRenderer().getObjects()->getShader("fog");
+    fogShader->setUniform("inputTexture", fogInputTexture);
+    bRenderer().getModelRenderer()->drawModel(bRenderer().getObjects()->getModel("fogSprite"), fogModelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false);
+    
+    
+    bRenderer::log("CCCAAALLLLLLEEEDDD");
+    
+    
 
 	//// Camera Movement ////
 	updateCamera("camera", deltaTime);
@@ -233,6 +303,14 @@ void RenderProject::loopFunction(const double &deltaTime, const double &elapsedT
 
 	/// Update render queue ///
 	updateRenderQueue("camera", deltaTime, elapsedTime);
+    
+    
+    
+    
+    
+    
+    
+    
 
 	// Quit renderer when escape is pressed
 	if (bRenderer().getInput()->getKeyState(bRenderer::KEY_ESCAPE) == bRenderer::INPUT_PRESS)
@@ -319,55 +397,7 @@ void RenderProject::updateRenderQueue(const std::string &camera, const double &d
 	bRenderer().getModelRenderer()->queueModelInstance("crystal", "crystal_red", camera, modelMatrix, std::vector<std::string>({ "torchLight", "thirdLight" }), true, false, true);
 	bRenderer().getObjects()->setAmbientColor(bRenderer::DEFAULT_AMBIENT_COLOR());
 
-	///*** Torch ***/
-	// Position the torch relative to the camera
-	modelMatrix = bRenderer().getObjects()->getCamera(camera)->getInverseViewMatrix();		// position and orient to match camera
-	modelMatrix *= vmml::create_translation(vmml::Vector3f(0.75f, -1.1f, 0.8f)) * vmml::create_scaling(vmml::Vector3f(1.2f)) * vmml::create_rotation(1.64f, vmml::Vector3f::UNIT_Y); // now position it relative to the camera
-	// submit to render queue
-	bRenderer().getModelRenderer()->queueModelInstance("torch", "torch_instance", camera, modelMatrix, std::vector<std::string>({ "torchLight" }));
-
-	/*** Flame ***/
-	// pass additional properties to the shader
-	bRenderer().getObjects()->getProperties("flameProperties")->setScalar("offset", _randomOffset);		// pass offset for wave effect
-	// create three flames
-	for (GLfloat z = 0.0f; z < 3.0f; z++)
-	{
-		// translate
-		vmml::Matrix4f translation = vmml::create_translation(vmml::Vector3f(0.65f / bRenderer().getView()->getAspectRatio(), 0.6f + (0.08f*z), (-z / 100.0f - 0.50f)));
-		// rotate
-		GLfloat rot = 0.0f;
-		if (fmod(z, 2.0f) != 0.0f)
-			rot = M_PI_F;
-			
-		vmml::Matrix4f rotation = vmml::create_rotation(rot, vmml::Vector3f::UNIT_Z);
-		// scale
-		GLfloat ParticleScale = 1.225f - (0.23f*z);
-		vmml::Matrix4f scaling = vmml::create_scaling(vmml::Vector3f(ParticleScale / bRenderer().getView()->getAspectRatio(), ParticleScale, ParticleScale));
-		// model matrix
-		modelMatrix = translation * scaling * rotation;
-		// submit to render queue
-		bRenderer().getModelRenderer()->queueModelInstance(bRenderer().getObjects()->getModel("flame"), ("flame_instance" + std::to_string(z)), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false, false, true, GL_SRC_ALPHA, GL_ONE, (-1.0f - 0.01f*z));  // negative distance because always in foreground
-	}
-
-	/*** Sparks ***/
-	for (GLfloat z = 1.0f; z < 2.0f; z++)
-	{
-		// translate
-		vmml::Matrix4f translation = vmml::create_translation(vmml::Vector3f(0.65f / bRenderer().getView()->getAspectRatio(), 0.65f, (-z / 100.0f - 0.58f)));
-		// rotate
-		GLfloat rot = 1.0f;
-		if (_running)
-			rot = randomNumber(1.0f, 1.1f)*_randomOffset*z;
-		vmml::Matrix4f rotation = vmml::create_rotation(rot, vmml::Vector3f::UNIT_Z);
-		// scale
-		GLfloat ParticleScale = 0.55f - (0.25f*z);
-		vmml::Matrix4f scaling = vmml::create_scaling(vmml::Vector3f(ParticleScale / bRenderer().getView()->getAspectRatio(), 4.0f*ParticleScale, ParticleScale));
-		// model matrix
-		modelMatrix = translation * scaling * rotation;
-
-		// submit to render queue
-		bRenderer().getModelRenderer()->queueModelInstance(bRenderer().getObjects()->getModel("sparks"), ("sparks_instance" + std::to_string(z)), modelMatrix, _viewMatrixHUD, vmml::Matrix4f::IDENTITY, std::vector<std::string>({}), false, false, true, GL_SRC_ALPHA, GL_ONE, (-2.0f - 0.01f*z)); // negative distance because always in foreground
-	}
+	
 
 }
 
